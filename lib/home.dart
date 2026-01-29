@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  GoogleMapController? _mapController;
-
-  @override
   Widget build(BuildContext context) {
+    late final GoogleMapController _mapController;
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "Real Time Location Tracker",
-          style: Theme.of(context).textTheme.titleLarge,
+          style: TextTheme.of(context).titleLarge,
         ),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
@@ -34,16 +28,14 @@ class _HomePageState extends State<HomePage> {
         zoomGesturesEnabled: true,
         mapType: MapType.normal,
         trafficEnabled: true,
+        onTap: (LatLng latLng) {
+          print(latLng);
+        },
+        onLongPress: (LatLng latLng) {
+          print("Long Press on $latLng");
+        },
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
-
-        onTap: (latLng) {
-          debugPrint("$latLng");
-        },
-        onLongPress: (latLng) {
-          debugPrint("Long Press on $latLng");
-        },
-
         markers: <Marker>{
           Marker(
             markerId: MarkerId('my-home'),
@@ -51,7 +43,14 @@ class _HomePageState extends State<HomePage> {
             icon: BitmapDescriptor.defaultMarkerWithHue(
               BitmapDescriptor.hueRose,
             ),
-            infoWindow: InfoWindow(title: "My Home", snippet: "Where I live"),
+            visible: true,
+            infoWindow: InfoWindow(
+              title: "My Home",
+              snippet: "Where i live",
+              onTap: () {
+                print("My home info window tapped");
+              },
+            ),
           ),
           Marker(
             markerId: MarkerId('my-office'),
@@ -59,7 +58,14 @@ class _HomePageState extends State<HomePage> {
             icon: BitmapDescriptor.defaultMarkerWithHue(
               BitmapDescriptor.hueGreen,
             ),
-            infoWindow: InfoWindow(title: "My Office", snippet: "Where I work"),
+            visible: true,
+            infoWindow: InfoWindow(
+              title: "My Office",
+              snippet: "Where i work",
+              onTap: () {
+                print("My office info window tapped");
+              },
+            ),
           ),
           Marker(
             markerId: MarkerId('location-dragger'),
@@ -68,15 +74,14 @@ class _HomePageState extends State<HomePage> {
               BitmapDescriptor.hueRed,
             ),
             draggable: true,
-            onDragStart: (latLng) {
-              debugPrint("Drag start from $latLng");
+            onDragStart: (LatLng latLng) {
+              print("Drag start from $latLng");
             },
-            onDragEnd: (latLng) {
-              debugPrint("Drag end point is $latLng");
+            onDragEnd: (LatLng latLng) {
+              print('Drag end point is $latLng');
             },
           ),
         },
-
         polylines: <Polyline>{
           Polyline(
             polylineId: PolylineId('my-route'),
@@ -88,15 +93,20 @@ class _HomePageState extends State<HomePage> {
             ],
             color: Colors.blue,
             width: 8,
+            visible: true,
+            startCap: Cap.buttCap,
+            endCap: Cap.roundCap,
+            onTap: () {
+              print("Click on Polyline");
+            },
           ),
         },
-
         circles: <Circle>{
           Circle(
             circleId: CircleId("newLand-circle"),
             center: LatLng(23.817600074862085, 90.41079070419073),
             radius: 50,
-            fillColor: Colors.blueAccent.withAlpha(100),
+            fillColor: Colors.blue.withAlpha(100),
             strokeColor: Colors.blue,
             strokeWidth: 2,
           ),
@@ -109,11 +119,10 @@ class _HomePageState extends State<HomePage> {
             strokeWidth: 2,
           ),
         },
-
         polygons: <Polygon>{
           Polygon(
-            polygonId: const PolygonId('Dangerous-Area'),
-            points: const [
+            polygonId: PolygonId('Dangerous-Area'),
+            points: [
               LatLng(23.81653206252087, 90.4090291634202),
               LatLng(23.816498322757486, 90.40958236902952),
               LatLng(23.816069213547184, 90.409398637712),
@@ -123,22 +132,15 @@ class _HomePageState extends State<HomePage> {
             fillColor: Colors.red.withAlpha(100),
             strokeColor: Colors.red,
             strokeWidth: 2,
+            onTap: () {
+              print('This is a dangerous area.Maintain distance');
+            },
           ),
         },
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // _mapController!.moveCamera(
-          //   CameraUpdate.newCameraPosition(
-          //     CameraPosition(
-          //       zoom: 16,
-          //       target: LatLng(23.815583971830566, 90.41056003421545),
-          //     ),
-          //   ),
-          // );
-
-          _mapController!.animateCamera(
+          _mapController.animateCamera( //Also use moveCamera
             CameraUpdate.newCameraPosition(
               CameraPosition(
                 zoom: 16,
@@ -147,7 +149,7 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         },
-        child: const Icon(Icons.home),
+        child: Icon(Icons.home),
       ),
     );
   }
