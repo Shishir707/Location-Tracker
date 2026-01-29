@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
           zoom: 16,
         ),
         onMapCreated: (GoogleMapController controller) {
-          controller = _mapController;
+          _mapController = controller;
         },
         zoomControlsEnabled: true,
         zoomGesturesEnabled: true,
@@ -73,12 +73,12 @@ class HomePage extends StatelessWidget {
               BitmapDescriptor.hueRed,
             ),
             draggable: true,
-            onDragStart: (LatLng latLng){
+            onDragStart: (LatLng latLng) {
               print("Drag start from $latLng");
             },
-            onDragEnd: (LatLng latLng){
+            onDragEnd: (LatLng latLng) {
               print('Drag end point is $latLng');
-            }
+            },
           ),
         },
         polylines: <Polyline>{
@@ -136,6 +136,18 @@ class HomePage extends StatelessWidget {
             },
           ),
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _mapController.moveCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(23.815583971830566, 90.41056003421545),
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.home),
       ),
     );
   }
