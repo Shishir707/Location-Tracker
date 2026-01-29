@@ -74,17 +74,52 @@ class HomePage extends StatelessWidget {
               LatLng(23.815583971830566, 90.41056003421545),
               LatLng(23.816479919246486, 90.41013825684786),
               LatLng(23.817555293360872, 90.41006147861481),
-              LatLng(23.815986090727016, 90.40961857885122)
+              LatLng(23.817600074862085, 90.41079070419073),
             ],
             color: Colors.blue,
             width: 8,
             visible: true,
             startCap: Cap.buttCap,
             endCap: Cap.roundCap,
-            onTap: (){
+            onTap: () {
               print("Click on Polyline");
-            }
-
+            },
+          ),
+        },
+        circles: <Circle>{
+          Circle(
+            circleId: CircleId("newLand-circle"),
+            center: LatLng(23.817600074862085, 90.41079070419073),
+            radius: 50,
+            fillColor: Colors.blue.withAlpha(100),
+            strokeColor: Colors.blue,
+            strokeWidth: 2,
+          ),
+          Circle(
+            circleId: CircleId("home-circle"),
+            center: LatLng(23.815583971830566, 90.41056003421545),
+            radius: 30,
+            fillColor: Colors.green.withAlpha(100),
+            strokeColor: Colors.green,
+            strokeWidth: 2,
+          ),
+        },
+        polygons: <Polygon>{
+          Polygon(
+            polygonId: PolygonId('Dangerous-Area'),
+            points: [
+              LatLng(23.81653206252087, 90.4090291634202),
+              LatLng(23.816498322757486, 90.40958236902952),
+              LatLng(23.816069213547184, 90.409398637712),
+              LatLng(23.81607780187982, 90.40889874100685),
+              LatLng(23.816548932399282, 90.40881592780352),
+            ],
+            fillColor: Colors.red.withAlpha(100),
+            strokeColor: Colors.red,
+            strokeWidth: 2,
+            onTap: () {
+              print('This is a dangerous area.Maintain distance');
+            },
           ),
         },
       ),
