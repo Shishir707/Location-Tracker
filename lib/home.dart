@@ -66,6 +66,20 @@ class HomePage extends StatelessWidget {
               },
             ),
           ),
+          Marker(
+            markerId: MarkerId('location-dragger'),
+            position: LatLng(23.815347178121932, 90.4081017896533),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueRed,
+            ),
+            draggable: true,
+            onDragStart: (LatLng latLng){
+              print("Drag start from $latLng");
+            },
+            onDragEnd: (LatLng latLng){
+              print('Drag end point is $latLng');
+            }
+          ),
         },
         polylines: <Polyline>{
           Polyline(
