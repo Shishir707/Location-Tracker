@@ -75,12 +75,8 @@ class _MyLocationState extends State<MyLocation> {
   }
 
   Future<void> _listenCurrentLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (isPermissionAllowed(permission)) {
-      bool isLocationServiceEnable =
-          await Geolocator.isLocationServiceEnabled();
-      if (isLocationServiceEnable) {
+    checkLocationPermissionService(
+      onSuccess: () {
         _positionSubscriber = Geolocator.getPositionStream().listen((
           currentLocation,
         ) {
@@ -89,6 +85,20 @@ class _MyLocationState extends State<MyLocation> {
             _currentPosition = currentLocation;
           });
         });
+      },
+    );
+  }
+
+  Future<void> checkLocationPermissionService({
+    required VoidCallback onSuccess,
+  }) async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (isPermissionAllowed(permission)) {
+      bool isLocationServiceEnable =
+          await Geolocator.isLocationServiceEnabled();
+      if (isLocationServiceEnable) {
+        onSuccess();
       } else {
         Geolocator.openLocationSettings();
       }
