@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -11,6 +13,13 @@ class MyLocation extends StatefulWidget {
 class _MyLocationState extends State<MyLocation> {
   Position? _currentPosition;
 
+  StreamSubscription? _positionSubscriber;
+
+  @override
+  void initState() {
+    super.initState();
+    _listenCurrentLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +74,42 @@ class _MyLocationState extends State<MyLocation> {
     }
   }
 
+  Future<void> _listenCurrentLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (isPermissionAllowed(permission)) {
+      bool isLocationServiceEnable =
+          await Geolocator.isLocationServiceEnabled();
+      if (isLocationServiceEnable) {
+        _positionSubscriber = Geolocator.getPositionStream().listen((
+          currentLocation,
+        ) {
+          print(currentLocation);
+          setState(() {
+            _currentPosition = currentLocation;
+          });
+        });
+      } else {
+        Geolocator.openLocationSettings();
+      }
+    } else {
+      await Geolocator.requestPermission();
+      LocationPermission requestPermission =
+          await Geolocator.requestPermission();
+      if (isPermissionAllowed(requestPermission)) {
+        _onTapGeoLocator();
+      }
+    }
+  }
+
   bool isPermissionAllowed(LocationPermission permission) {
     return permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse;
+  }
+
+  @override
+  void dispose() {
+    _positionSubscriber?.cancel();
+    super.dispose();
   }
 }
