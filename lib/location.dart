@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
-class MyLocation extends StatelessWidget {
+class MyLocation extends StatefulWidget {
   const MyLocation({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final Geolocator _geoLocator = Geolocator();
+  _MyLocationState createState() => _MyLocationState();
+}
 
+class _MyLocationState extends State<MyLocation> {
+  Position? _currentPosition;
+
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -23,7 +29,7 @@ class MyLocation extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("My Location"),
+            Text("My Location : ${_currentPosition}"),
             TextButton(
               onPressed: _onTapGeoLocator,
               child: Text("Get My Location"),
@@ -33,30 +39,34 @@ class MyLocation extends StatelessWidget {
       ),
     );
   }
-}
 
-Future<void> _onTapGeoLocator() async {
-  LocationPermission permission = await Geolocator.checkPermission();
+  Future<void> _onTapGeoLocator() async {
+    LocationPermission permission = await Geolocator.checkPermission();
 
-  if (isPermissionAllowed(permission)) {
-    bool isLocationServiceEnable = await Geolocator.isLocationServiceEnabled();
-    if (isLocationServiceEnable) {
-      Position position = await Geolocator.getCurrentPosition();
-      print(position);
+    if (isPermissionAllowed(permission)) {
+      bool isLocationServiceEnable =
+          await Geolocator.isLocationServiceEnabled();
+      if (isLocationServiceEnable) {
+        Position position = await Geolocator.getCurrentPosition();
+        print(position);
+        setState(() {
+          _currentPosition = position;
+        });
+      } else {
+        Geolocator.openLocationSettings();
+      }
     } else {
-      Geolocator.openLocationSettings();
-    }
-  } else {
-    Geolocator.requestPermission();
-    LocationPermission requestPermission = await Geolocator.requestPermission();
-    if (isPermissionAllowed(requestPermission)) {
-      _onTapGeoLocator();
-      return;
+      await Geolocator.requestPermission();
+      LocationPermission requestPermission =
+          await Geolocator.requestPermission();
+      if (isPermissionAllowed(requestPermission)) {
+        _onTapGeoLocator();
+      }
     }
   }
-}
 
-bool isPermissionAllowed(LocationPermission permission) {
-  return permission == LocationPermission.always ||
-      permission == LocationPermission.whileInUse;
+  bool isPermissionAllowed(LocationPermission permission) {
+    return permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse;
+  }
 }
