@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_map/home.dart';
 
+import 'location.dart';
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -12,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomePage(),
+      home: MyLocation(),
     );
   }
 }
