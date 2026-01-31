@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MyLocation extends StatefulWidget {
   const MyLocation({super.key});
+  static List<LatLng> locations = [];
 
   @override
   _MyLocationState createState() => _MyLocationState();
@@ -83,6 +85,7 @@ class _MyLocationState extends State<MyLocation> {
           print(currentLocation);
           setState(() {
             _currentPosition = currentLocation;
+            MyLocation.locations.add(currentLocation as LatLng);
           });
         });
       },
